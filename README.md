@@ -8,7 +8,7 @@ To be used with [LTS Haskell 10.3](https://www.stackage.org/lts-10.3):
 
 ---
 
-![](./example.png)
+![](./example-with-failure.png)
 
 ```
 stack runghc -- -ilibrary:src:test test/Main.hs
@@ -31,6 +31,24 @@ stack runghc -- -ilibrary:src:test test/Main.hs
 <IT::>is idempotent
 
 <PASSED::>Test Passed
+
+<COMPLETEDIN::>
+
+<COMPLETEDIN::>
+
+<DESCRIBE::>stripDigits
+
+<IT::>removes leading and trailing digits
+
+
+<FAILED::>Test Failed<:LF:>expected: "foo bar"<:LF:> but got: "oo bar"
+
+<COMPLETEDIN::>
+
+<IT::>removes only leading and trailing digits
+
+
+<FAILED::>Test Failed<:LF:>expected: "a00faa bar0f"<:LF:> but got: " bar"
 
 <COMPLETEDIN::>
 
@@ -64,9 +82,5 @@ stack runghc -- -ilibrary:src:test test/Main.hs
 
 <COMPLETEDIN::>
 
-<COMPLETEDIN::>4.2470
+<COMPLETEDIN::>4.9640
 ```
-
-## TODO
-
-- Improve `FailureReason` output

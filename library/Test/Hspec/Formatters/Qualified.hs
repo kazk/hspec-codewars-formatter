@@ -69,20 +69,8 @@ exampleFailed' = \(_, requirement) reason -> do
     writeLine ""
     writeLine' $ join ["<IT::>", requirement]
     writeLine ""
-    writeLine' $ onFailed reason
+    formatFailure reason
     writeLine "\n<COMPLETEDIN::>"
-  where
-    -- TODO imporove FailureReason format
-    onFailed = either ((printf "<ERROR::>%s") . formatException)
-                      ((printf "<FAILED::>%s") . show)
-    --formatReason :: FailureReason -> String
-    --formatReason NoReason = "Test Failed"
-    --formatReason (Reason s) = s
-    --formatReason (ExpectedButGot (Maybe String) e a) =
-    --formatFailureMessage :: Either SomeException FailureReason -> FormatM ()
-    --formatFailureMessage (Left e) = do
-    --  writeLine $ ((printf "<ERROR::>%s") . formatException) e
-    --formatFailureMessage (Right NoReason) = writeLine "<FAILED::>Test Failed"
 
 -- evaluated after each pending example
 examplePending' :: Path -> Maybe String -> FormatM ()
@@ -100,3 +88,18 @@ exampleProgress' = \_ _ _ -> return ()
 
 writeLine' :: String -> FormatM ()
 writeLine' s = writeLine $ intercalate "<:LF:>" $ splitOn "\n" s
+
+formatFailure :: Either SomeException FailureReason -> FormatM ()
+formatFailure (Left e) = do
+    writeLine ""
+    writeLine' $ ((printf "<ERROR::>%s") . formatException) e
+formatFailure (Right NoReason) = do
+    writeLine ""
+    writeLine "<FAILED::>Test Failed"
+formatFailure (Right (Reason err)) = do
+    writeLine ""
+    writeLine' $ (printf "<FAILED::>%s" err)
+formatFailure (Right (ExpectedButGot preface expected actual)) = do
+    writeLine ""
+    mapM_ writeLine preface
+    writeLine' $ "<FAILED::>Test Failed\nexpected: " ++ expected ++ "\n but got: " ++ actual
